@@ -33,13 +33,13 @@ public:
 			tmp = pFirst;
 		}
 	}
-	int Count()
+	int CountSize()
 	{
-		TNode *p = pFirst; int i = 0;
-		while (p != pLast)
+		pCurr = pFirst; int i = 0;
+		while (pCurr != pStop)
 		{
 			i++;
-			p = p->pNext;
+			pCurr = pCurr->pNext;
 		}
 		return i;
 	}
@@ -47,8 +47,8 @@ public:
 	{
 		TNode<T> *tmp = new TNode<T>;
 		tmp->val = a;
-		tmp->pNext = NULL;
-		if (pLast != NULL)
+		tmp->pNext = pStop;
+		if (pLast != pStop)
 		{
 			pLast->pNext = tmp;
 			pLast = tmp;
@@ -66,11 +66,13 @@ public:
 		tmp->pNext = pFirst;
 		tmp->val = a;
 		pFirst = tmp;
+		len++;
+		pos++;
 	}
-	void InsPos(T a, int pos)
+	/*void InsPos(T a, int pos)
 	{
 		if (pos == 0) InsFirst(a);
-		else if (pos >= Count()) InsLast();
+		else if (pos >= CountSize()) InsLast();
 		else
 		{
 			TNode *tmp = new TNode;
@@ -101,7 +103,7 @@ public:
 			pCurr = tmp;
 			len++;
 		}
-	}
+	} */
 	void DelFirst()
 	{
 		if (pFirst == pLast)
@@ -127,7 +129,7 @@ public:
 		pCurr = pCurr->pNext;
 		pos++;
 	}
-	void IsEnd()
+	bool IsEnd()
 	{
 		return pCurr == pStop;
 	}
