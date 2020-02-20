@@ -10,7 +10,7 @@ template <class T>
 class TList
 {
 protected:
-	TNode *pFirst, *pLast, *pCurr, *pPrev, *pStop;
+	TNode<T> *pFirst, *pLast, *pCurr, *pPrev, *pStop;
 	int pos, len;
 public:
 	TList()
@@ -33,6 +33,7 @@ public:
 			tmp = pFirst;
 		}
 	}
+	
 	int CountSize()
 	{
 		pCurr = pFirst; int i = 0;
@@ -43,6 +44,7 @@ public:
 		}
 		return i;
 	}
+
 	void InsLast(T a)
 	{
 		TNode<T> *tmp = new TNode<T>;
@@ -87,7 +89,7 @@ public:
 			Pred->pNext = tmp;
 			tmp->pNext = Curr;
 		}
-	}
+	} */
 	void InsCurrent(T a)
 	{
 		if (pCurr == pFirst)
@@ -103,7 +105,7 @@ public:
 			pCurr = tmp;
 			len++;
 		}
-	} */
+	} 
 	void DelFirst()
 	{
 		if (pFirst == pLast)
@@ -152,6 +154,7 @@ public:
 		}
 		}
 	}
+	
 };
 template <class T>
 class THeadList: public TList<T>
@@ -159,12 +162,13 @@ class THeadList: public TList<T>
 protected:
 	TNode<T> *pHead;
 public:
-	THeadList() : TList<T>()
+	THeadList():TList<T>()
 	{
 		pHead = new TNode<T>;
 		pHead->pNext = pHead;
 		pStop = pHead;
 	}
+	
 	~THeadList()
 	{
 		TNode<T> *tmp = pFirst;
@@ -185,5 +189,91 @@ public:
 	{
 		TList::DelFirst();
 		pHead->pNext = pFirst;
+	}
+};
+struct TMonom
+{
+	double coeff;
+	int px, py, pz;
+	TMonom()
+	{
+		coeff = 0;
+		px = 0;
+		py = 0;
+		pz = 0;
+	}
+	bool operator== (TMonom a)
+	{
+		if (a.px == this->px)
+		{
+			if (a.py == this->py)
+				if (a.pz == this->pz)
+					return true;
+		}
+
+	}
+	bool operator != (TMonom a)
+	{
+		if (a.px != this->px)
+			return true;
+		else
+			if (a.py != this->py)
+				return true;
+			else
+				if (a.pz != this->pz)
+					return true;
+				else return false;
+		
+
+	}
+	void operator = (TMonom a)
+	{
+		this->coeff = a.coeff;
+		this->pz = a.pz;
+		this->py = a.py;
+		this->px = a.px;
+
+	}
+};
+class TPolinom :public THeadList<TMonom>
+{
+public:
+	TPolinom() :THeadList<TMonom>()
+	{
+		pHead->val.coeff = 0;
+		pHead->val.pz = -1;
+		pHead->val.px = 0;
+		pHead->val.py = 0;
+	}
+
+	TPolinom(int monoms[][2], int n) :THeadList<TMonom>()
+	{
+		pHead-> val.coeff = 0;
+		pHead->val.pz = -1;
+		pHead->val.py = 0;
+		pHead->val.px = 0;
+		TMonom M;
+		for (int i = 0; i < n; i++)
+		{
+			M.coeff = monoms[i][0];
+			M.pz = monoms[i][1] % 10;
+			M.px = monoms[i][1] / 100;
+			M.py = (monoms[i][1] / 10) % 10;
+			InsLast(M);
+		}
+
+	}
+	TPolinom( TPolinom &P) :THeadList<TMonom>()
+	{
+		pHead->val.coeff = 0;
+		pHead->val.pz = -1;
+		pHead->val.px = 0;
+		pHead->val.py = 0;
+		TMonom M;
+		for (P.Reset(); !P.IsEnd(); P.GoNext())
+		{
+			M = P.pCurr->val;
+			InsLast(M);
+		}
 	}
 };
