@@ -1,5 +1,6 @@
 #pragma once
 using namespace std;
+#include <iostream>
 template <class T>
 struct TNode
 {
@@ -61,13 +62,28 @@ public:
 		}
 		len++;
 	}
+	void DelCurr() {
+		if (pCurr == pFirst) DelFirst();
+		else {
+			TNode<T>* tmp = new TNode<T>;
+			tmp = pCurr;
+			delete pCurr;
+			pCurr = tmp->pNext;
+		}
+	}
 	void InsFirst(T a)
 	{
-		TNode<T> * tmp;
-		tmp = new TNode;
-		tmp->pNext = pFirst;
+		TNode<T> *tmp = new TNode <T>;
 		tmp->val = a;
-		pFirst = tmp;
+		if (pFirst == NULL) {
+			pFirst = pLast = pCurr = tmp;
+			pFirst->pNext = pStop;
+			pos = 0;
+		}
+		else {
+			tmp->pNext = pFirst;
+			pFirst = tmp;
+		}
 		len++;
 		pos++;
 	}
@@ -110,10 +126,12 @@ public:
 	{
 		if (pFirst == pLast)
 			throw 1;
-		TNode<T> p = pFirst;
-		pFirst = pFirst->pNext;
-		delete p;
+		TNode<T>* tmp = new TNode<T>;
+		tmp = pFirst->pNext;
+		delete pFirst;
+		pFirst = tmp;
 		len--;
+		pos--;
 	}
 	T GetCurrentEl()
 	{
@@ -202,6 +220,95 @@ struct TMonom
 		py = 0;
 		pz = 0;
 	}
+	bool operator> ( const TMonom & n) {
+	
+		if (this->px > n.px) {
+			return true;
+			if (this->py > n.py) {
+				return true;
+				if (this->pz > n.pz) {
+					return true;
+				}
+			}
+		}
+		else
+			return false;
+	}
+
+	bool operator< (const TMonom& n) {
+		if (this->px < n.px) {
+			return true;
+			if (this->py < n.py) {
+				return true;
+				if (this->pz < n.pz) {
+					return true;
+				}
+			}
+		}
+		else
+			return false;
+	}
+
+
+	TMonom operator+ (const TMonom& t) {
+		if ((this->px != t.px) || (this->py != t.py) || (this->pz != t.pz)) {
+			
+			throw -4;
+		}
+
+		TMonom res;
+
+		res.px = t.px;
+		res.py = t.py;
+		res.pz = t.pz;
+		res.coeff = this->coeff + t.coeff;
+
+		return res;
+	}
+
+	TMonom operator-(const TMonom& t) {
+		if ((this->px != t.px) || (this->py != t.py) || (this->pz != t.pz)) {
+			throw -8;
+		}
+
+		TMonom res;
+
+		res.px = t.px;
+		res.py = t.py;
+		res.pz = t.pz;
+		res.coeff = this->coeff - t.coeff;
+
+		return res;
+	}
+
+	TMonom operator*(const TMonom& t) {
+		TMonom res;
+
+		res.px = this->px + t.px;
+		res.py = this->py + t.py;
+		res.pz = this->pz + t.pz;
+		res.coeff = this->coeff * t.coeff;
+
+		return res;
+	}
+
+	TMonom operator/(const TMonom& t) {
+		TMonom res;
+
+		res.px = this->px - t.px;
+		res.py = this->py - t.py;
+		res.pz = this->pz - t.pz;
+		res.coeff = this->coeff / t.coeff;
+
+		return res;
+	}
+
+	 TMonom operator*( const double a) {
+		coeff = this->coeff * a;
+		return *this;
+	}
+
+	
 	bool operator== (TMonom a)
 	{
 		if (a.px == this->px)
@@ -234,7 +341,13 @@ struct TMonom
 		this->px = a.px;
 
 	}
+	friend ostream& operator<<(ostream &os, const TMonom &t);
 };
+ostream& operator<<(ostream &os, const TMonom &t) {
+	os << t.coeff << "x^" << t.px << " y^" << t.py << " z^" << t.pz;
+	return os;
+
+}
 class TPolinom :public THeadList<TMonom>
 {
 public:
@@ -275,5 +388,52 @@ public:
 			M = P.pCurr->val;
 			InsLast(M);
 		}
+	}
+	TPolinom& operator=(TPolinom &p) 
+	{
+		int l = len;
+		for (int i = 0; i < l; i++)
+			DelFirst();
+		for (p.Reset(); !p.IsEnd(); p.GoNext()) {
+			InsLast(p.pCurr->val);
+		}
+		return *this;
+	}
+
+	
+	void operator+=(TMonom& mon) {
+		for (Reset(); !IsEnd(); GoNext()) {
+			if (pCurr->val == mon) 
+			{
+				pCurr->val = pCurr->val + mon;
+				if (!pCurr->val.coeff)
+					DelCurr();
+				else
+					return;
+			}
+			if (mon > pCurr->val) {
+				InsCurrent(mon);
+				return;
+			}
+		}
+		InsLast(mon);
+	}
+
+	TPolinom operator+(TMonom& mon) {
+		TPolinom res = *this;
+		res += mon;
+		return res;
+	}
+	
+	friend ostream& operator<<(ostream &os, TPolinom &p) {
+		if (p.len) {
+			for (p.Reset(); !p.IsEnd(); p.GoNext()) {
+				os << p.pCurr->val << " + ";
+			}
+			os << ".";
+		}
+		else
+			os << "0";
+		return os;
 	}
 };
