@@ -14,13 +14,16 @@ int main() {
 	m.pz = 3;
 
 	q.coeff = 3;
-	q.px = 1;
-	q.py = 0;
-	q.pz = 12;
+	q.px = 5;
+	q.py = 4;
+	q.pz = 3;
 
 	cout << "m = " << m << "\nq = " << q << endl;
-	TPolinom m1, g1, res;
-	res += m1;
+	int monoms[3][2] = { {2, 145}, {3, 137}, {4, 145} };
+	TPolinom p(monoms, 2);
+	cout << p;
+	//TPolinom m1, g1, res;
+	//res += m1;
 
 	_getch();
 

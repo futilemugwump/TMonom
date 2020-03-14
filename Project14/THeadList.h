@@ -51,7 +51,7 @@ public:
 		TNode<T> *tmp = new TNode<T>;
 		tmp->val = a;
 		tmp->pNext = pStop;
-		if (pLast != pStop)
+		if (pLast != NULL)
 		{
 			pLast->pNext = tmp;
 			pLast = tmp;
@@ -213,20 +213,15 @@ struct TMonom
 {
 	double coeff;
 	int px, py, pz;
-	TMonom()
-	{
-		coeff = 0;
-		px = 0;
-		py = 0;
-		pz = 0;
-	}
-	bool operator> ( const TMonom & n) {
+};
 	
-		if (this->px > n.px) {
+	bool operator> ( const TMonom & n1, const TMonom & n2) {
+	
+		if (n1.px > n2.px) {
 			return true;
-			if (this->py > n.py) {
+			if (n1.py > n2.py) {
 				return true;
-				if (this->pz > n.pz) {
+				if (n1.pz > n2.pz) {
 					return true;
 				}
 			}
@@ -235,12 +230,12 @@ struct TMonom
 			return false;
 	}
 
-	bool operator< (const TMonom& n) {
-		if (this->px < n.px) {
+	bool operator< (const TMonom & n1, const TMonom & n2) {
+		if (n1.px < n2.px) {
 			return true;
-			if (this->py < n.py) {
+			if (n1.py < n2.py) {
 				return true;
-				if (this->pz < n.pz) {
+				if (n1.pz < n2.pz) {
 					return true;
 				}
 			}
@@ -250,99 +245,92 @@ struct TMonom
 	}
 
 
-	TMonom operator+ (const TMonom& t) {
-		if ((this->px != t.px) || (this->py != t.py) || (this->pz != t.pz)) {
+	TMonom operator+ (const TMonom & n1, const TMonom & n2) {
+		if ((n1.px != n2.px) || (n1.py != n2.py) || (n1.pz != n2.pz)) {
 			
 			throw -4;
+		} 
+
+		TMonom res;
+
+		res.px = n1.px;
+		res.py = n2.py;
+		res.pz = n2.pz;
+		res.coeff = n1.coeff + n2.coeff;
+
+		return res;
+	}
+
+	TMonom operator-(const TMonom & n1, const TMonom & n2) {
+		if ((n1.px != n2.px) || (n1.py != n2.py) || (n1.pz != n2.pz)) {
+			throw - 8;}
+		
+			TMonom res;
+
+			res.px = n1.px;
+			res.py = n2.py;
+			res.pz = n2.pz;
+			res.coeff = n1.coeff - n2.coeff;
+
+			return res;
 		}
+		
 
+	TMonom operator*(const TMonom & n1, const TMonom & n2) {
 		TMonom res;
 
-		res.px = t.px;
-		res.py = t.py;
-		res.pz = t.pz;
-		res.coeff = this->coeff + t.coeff;
+		res.px = n1.px + n2.px;
+		res.py = n1.py + n2.py;
+		res.pz = n1.pz + n2.pz;
+		res.coeff = n1.coeff * n2.coeff;
 
 		return res;
 	}
 
-	TMonom operator-(const TMonom& t) {
-		if ((this->px != t.px) || (this->py != t.py) || (this->pz != t.pz)) {
-			throw -8;
-		}
-
+	TMonom operator/(const TMonom & n1, const TMonom & n2) {
 		TMonom res;
 
-		res.px = t.px;
-		res.py = t.py;
-		res.pz = t.pz;
-		res.coeff = this->coeff - t.coeff;
+		res.px = n1.px - n2.px;
+		res.py = n1.py - n2.py;
+		res.pz = n1.pz - n2.pz;
+		res.coeff = n1.coeff / n2.coeff;
 
 		return res;
 	}
 
-	TMonom operator*(const TMonom& t) {
+	 TMonom operator*(const TMonom & n1, const double a) {
 		TMonom res;
-
-		res.px = this->px + t.px;
-		res.py = this->py + t.py;
-		res.pz = this->pz + t.pz;
-		res.coeff = this->coeff * t.coeff;
-
+		res.coeff = n1.coeff * a;
 		return res;
-	}
-
-	TMonom operator/(const TMonom& t) {
-		TMonom res;
-
-		res.px = this->px - t.px;
-		res.py = this->py - t.py;
-		res.pz = this->pz - t.pz;
-		res.coeff = this->coeff / t.coeff;
-
-		return res;
-	}
-
-	 TMonom operator*( const double a) {
-		coeff = this->coeff * a;
-		return *this;
-	}
+	} 
 
 	
-	bool operator== (TMonom a)
+	bool operator== (const TMonom & n1, const TMonom & n2)
 	{
-		if (a.px == this->px)
+		if (n1.px == n2.px)
 		{
-			if (a.py == this->py)
-				if (a.pz == this->pz)
+			if (n1.py == n2.py)
+				if (n1.pz == n2.pz)
 					return true;
 		}
 
 	}
-	bool operator != (TMonom a)
+	bool operator != (const TMonom & n1, const TMonom & n2)
 	{
-		if (a.px != this->px)
+		if (n1.px != n2.px)
 			return true;
 		else
-			if (a.py != this->py)
+			if (n1.py != n2.py)
 				return true;
 			else
-				if (a.pz != this->pz)
+				if (n1.pz != n2.pz)
 					return true;
 				else return false;
 		
 
 	}
-	void operator = (TMonom a)
-	{
-		this->coeff = a.coeff;
-		this->pz = a.pz;
-		this->py = a.py;
-		this->px = a.px;
-
-	}
-	friend ostream& operator<<(ostream &os, const TMonom &t);
-};
+	
+	
 ostream& operator<<(ostream &os, const TMonom &t) {
 	os << t.coeff << "x^" << t.px << " y^" << t.py << " z^" << t.pz;
 	return os;
@@ -351,7 +339,7 @@ ostream& operator<<(ostream &os, const TMonom &t) {
 class TPolinom :public THeadList<TMonom>
 {
 public:
-	TPolinom() :THeadList<TMonom>()
+	TPolinom():THeadList<TMonom>()
 	{
 		pHead->val.coeff = 0;
 		pHead->val.pz = -1;
@@ -359,7 +347,7 @@ public:
 		pHead->val.py = 0;
 	}
 
-	TPolinom(int monoms[][2], int n) :THeadList<TMonom>()
+	TPolinom(int monoms[][2], int n):THeadList<TMonom>()
 	{
 		pHead-> val.coeff = 0;
 		pHead->val.pz = -1;
@@ -376,7 +364,7 @@ public:
 		}
 
 	}
-	TPolinom( TPolinom &P) :THeadList<TMonom>()
+	TPolinom( TPolinom &P):THeadList<TMonom>()
 	{
 		pHead->val.coeff = 0;
 		pHead->val.pz = -1;
@@ -424,7 +412,38 @@ public:
 		res += mon;
 		return res;
 	}
-	
+	void operator +=(TPolinom& Q)
+	{
+		TMonom pm, qm, rm;
+		Reset();
+		Q.Reset();
+		while (!IsEnd())
+		{
+			pm = pCurr->val;
+			qm = Q.pCurr->val;
+			if (pm > qm) GoNext();
+			else if (pm < qm)
+			{
+				InsCurrent(qm);
+				Q.GoNext();
+			}
+			else
+				rm = pm;
+			rm.coeff += qm.coeff;
+			if (rm.coeff == 0)
+			{
+				DelCurr();
+				Q.GoNext();
+			}
+			else
+			{
+				pCurr->val = rm;
+				Q.GoNext();
+
+			}
+		}
+
+	}
 	friend ostream& operator<<(ostream &os, TPolinom &p) {
 		if (p.len) {
 			for (p.Reset(); !p.IsEnd(); p.GoNext()) {
