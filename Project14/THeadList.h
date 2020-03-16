@@ -140,8 +140,8 @@ public:
 	void Reset()
 	{
 		pCurr = pFirst;
-		pPrev = pStop;
 		pos = 0;
+		pPrev = pStop;
 	}
 	void GoNext()
 	{
@@ -407,7 +407,17 @@ public:
 		}
 		InsLast(mon);
 	}
-
+	bool operator==(TPolinom &q) {
+		if (len == q.len) {
+			for (Reset(); !IsEnd(); GoNext()) {
+				for (q.Reset(); !q.IsEnd(); q.GoNext()) {
+					if (pCurr->val != q.pCurr->val)return false;
+				}
+			}
+			return true;
+		}
+		else return false;
+	}
 	TPolinom operator+(TMonom& mon) {
 		TPolinom res = *this;
 		res += mon;
@@ -418,18 +428,21 @@ public:
 		TMonom pm, qm, rm;
 		Reset();
 		Q.Reset();
-		while (!IsEnd())
+		while (!Q.IsEnd())
 		{
 			pm = pCurr->val;
 			qm = Q.pCurr->val;
-			if (pm > qm) GoNext();
-			else if (pm < qm)
-			{
-				InsCurrent(qm);
-				Q.GoNext();
+			if (pm > qm) {GoNext();}
+
+			else {
+				if (pm < qm)
+				{
+					InsCurrent(qm);
+					Q.GoNext();
+				}
+				else
+					rm = pm;
 			}
-			else
-				rm = pm;
 			rm.coeff += qm.coeff;
 			if (rm.coeff == 0)
 			{
@@ -444,6 +457,67 @@ public:
 			}
 		}
 
+	}
+	void operator*=(const double a) {
+		if (len) {
+			for (Reset(); !IsEnd(); GoNext())
+				pCurr->val.coeff *= a;
+		}
+	}
+
+	TPolinom operator*(const double a) {
+		TPolinom res;
+		res += *this;
+		res *= a;
+		return res;
+	}
+	void operator *=(TMonom mon)
+	{
+		for (Reset(); !IsEnd(); GoNext())
+		{
+			pCurr->val.coeff *= mon.coeff;
+			pCurr->val.px += mon.px;
+			pCurr->val.py += mon.py;
+			pCurr->val.pz += mon.pz;
+		}
+	}
+	TPolinom operator*(TMonom &m) {
+		TPolinom res;
+		res += *this;
+		res *= m;
+		return res;
+	}
+	TPolinom operator*(TPolinom &q) {
+		TPolinom res;
+		Reset();
+		for (q.Reset(); !q.IsEnd(); q.GoNext()) {
+			TPolinom tmp = *this;
+			res += tmp * q.pCurr->val;
+		}
+
+		return res;
+	}
+
+	void InsInOrder(const TMonom &m) {
+		if (m.coeff == 0)
+			return;
+		if (!len) {
+			InsFirst(m);
+			return;
+		}
+		for (Reset(); !IsEnd(); GoNext()) {
+			if (pCurr->val == m) {
+				pCurr->val.coeff += m.coeff;
+				if (pCurr->val.coeff == 0)
+					DelCurr();
+				return;
+			}
+			if (pCurr->val < m) {
+				InsCurrent(m);
+				return;
+			}
+		}
+		InsLast(m);
 	}
 	friend ostream& operator<<(ostream &os, TPolinom &p) {
 		if (p.len) {

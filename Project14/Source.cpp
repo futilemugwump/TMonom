@@ -19,12 +19,17 @@ int main() {
 	q.pz = 3;
 
 	cout << "m = " << m << "\nq = " << q << endl;
-	/*int monoms[3][2] = { {2, 145}, {3, 137}, {4, 145} };
+	int monoms[3][2] = { {2, 145}, {3, 137}, {4, 145} };
 	TPolinom p(monoms, 2);
+	cout << p;
+	int monoms2[3][2] = { {7, 145}, {8, 137}, {4, 145} };
+	TPolinom p2(monoms2, 2);
+	cout << p2;
+	p += p2;
 	cout << p;
 	//TPolinom m1, g1, res;
 	//res += m1;
-	*/
+	
 	_getch();
 
 	return 0;
