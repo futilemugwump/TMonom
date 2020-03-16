@@ -231,9 +231,9 @@ struct TMonom
 	}
 
 	bool operator< (const TMonom & n1, const TMonom & n2) {
-		if (n1.px < n2.px) {
+		if (n1.px <= n2.px) {
 			return true;
-			if (n1.py < n2.py) {
+			if (n1.py <= n2.py) {
 				return true;
 				if (n1.pz < n2.pz) {
 					return true;
@@ -313,6 +313,7 @@ struct TMonom
 				if (n1.pz == n2.pz)
 					return true;
 		}
+		else return false;
 
 	}
 	bool operator != (const TMonom & n1, const TMonom & n2)

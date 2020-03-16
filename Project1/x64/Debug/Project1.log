@@ -1,0 +1,31 @@
+﻿  test_tmonom.cpp
+c:\users\user\tmonom\project1\test_tmonom.cpp(8): warning C4101: C: неиспользованная локальная переменная
+c:\users\user\tmonom\project1\gtest.h(18864): warning C4805: ==: небезопасное смешение типа "const T1" и типа "const T2" в операции
+          with
+          [
+              T1=bool
+          ]
+          and
+          [
+              T2=int
+          ]
+  c:\users\user\tmonom\project1\gtest.h(18901): note: выполняется компиляция ссылки на экземпляр шаблон функции "testing::AssertionResult testing::internal::CmpHelperEQ<T1,T2>(const char *,const char *,const T1 &,const T2 &)"
+          with
+          [
+              T1=bool,
+              T2=int
+          ]
+  c:\users\user\tmonom\project1\test_tmonom.cpp(58): note: выполняется компиляция ссылки на экземпляр шаблон функции "testing::AssertionResult testing::internal::EqHelper<false>::Compare<bool,int>(const char *,const char *,const T1 &,const T2 &)"
+          with
+          [
+              T1=bool,
+              T2=int
+          ]
+  c:\users\user\tmonom\project1\test_tmonom.cpp(58): note: выполняется компиляция ссылки на экземпляр шаблон функции "testing::AssertionResult testing::internal::EqHelper<false>::Compare<bool,int>(const char *,const char *,const T1 &,const T2 &)"
+          with
+          [
+              T1=bool,
+              T2=int
+          ]
+c:\users\user\tmonom\project14\theadlist.h(318): warning C4715: operator==: значение возвращается не при всех путях выполнения
+  Project1.vcxproj -> C:\Users\user\TMonom\x64\Debug\test.exe
