@@ -1,6 +1,6 @@
 #include "gtest.h"
 #include "..//Project14/TheadList.h"
-#include <string>
+
 
 TEST(TMonom, can_create_monom)
 {
@@ -95,94 +95,110 @@ TEST(TPolinom, can_create_polynom_from_the_array)
 	int monoms[3][2] = { {2, 145}, {3, 137}, {4, 145} };
 	ASSERT_NO_THROW(TPolinom p(monoms, 2));
 }
+TEST(TPolinom, can_create_copied_polynom)
+{
+	int monoms[3][2] = { {2, 145}, {3, 137}, {4, 145} };
+	TPolinom pol(monoms, 3);
+	
+	
+	ASSERT_NO_THROW(TPolinom pol1(pol));
+}
 TEST(TPolinom, can_add_monom)
 {
-	TPolinom p, resq;
-	TMonom a, w, res;
-	a.coeff = 1;
-	a.px = 1;
-	a.py = 1;
-	a.pz = 1;
+	int monoms[3][2] = { {2, 145}, {3, 137}, {4, 145} };
+	TPolinom pol(monoms, 3);
+	TMonom w;
 	w.coeff = 5;
 	w.px = 1;
 	w.py = 1;
 	w.pz = 1;
-	res.coeff = 6;
-	w.px = 1;
-	w.py = 1;
-	w.pz = 1;
-	resq.InsInOrder(res);
-	ASSERT_NO_THROW(p.InsInOrder(a));
-	//EXPECT_EQ(res, (a + w));
-	ASSERT_NO_THROW(p + w);
-	//EXPECT_EQ((resq == p), 1);
-	ASSERT_NO_THROW(a + w);
-	
+	ASSERT_NO_THROW(pol.AddMonom(w));
 }
 
 TEST(TPolinom, can_multiplicate_pol_and_mon) {
-	TMonom m, n, c;
-	m.coeff = 5;
-	m.px = 1;
-	m.py = 1;
-	m.pz = 0;
-	n.coeff = 7;
-	n.px = 1;
-	n.py = 2;
-	n.pz = 3;
-	TPolinom p;
-	p.InsInOrder(m);
-	p = p*n;
-	TMonom res;
-	res.coeff = 35;
-	res.px = 2;
-	res.py = 3;
-	res.pz = 3;
-	TPolinom q;
-	q.InsInOrder(res);
-	EXPECT_EQ((q == p),1);
-}
-
-/*TEST(TPolinom, can_add_pol_and_pol) {
-	TMonom m, n, c;
-	m.coeff = 5;
-	m.px = 1;
-	m.py = 1;
-	m.pz = 0;
-	n.coeff = 7;
-	n.px = 1;
-	n.py = 2;
-	n.pz = 3;
-	c.coeff = 35;
-	c.px = 2;
-	c.py = 3;
+	int monoms[3][2] = { {2, 145}, {3, 136}, {4, 372} };
+	TPolinom pol(monoms, 3);
+	TMonom c;
+	c.coeff = 6;
+	c.px = 1;
+	c.py = 2;
 	c.pz = 3;
-	TPolinom p, l, res;
-	p.insOrd(m);
-	l.insOrd(n);
-	res.insOrd(c);
-	EXPECT_TRUE(res == p * l);
+	ASSERT_NO_THROW(pol *= c);
+	int monoms2[3][2] = { {12, 268}, {18, 259}, {24, 495} };
+	TPolinom pol2(monoms2, 3);
+	EXPECT_EQ((pol == pol2),1);
+} 
+TEST(TPolinom, copied_polynomial_is_equal_to_original)
+{
+	int monoms[3][2] = { {2, 145}, {3, 137}, {4, 145} };
+	TPolinom pol(monoms, 3);
+	TPolinom pol1(pol);
+	EXPECT_EQ(pol1, pol);
+}
+ TEST(TPolinom, can_add_pol_and_pol) {
+	 int monoms[3][2] = { {2, 545}, {3, 536}, {4, 372} };
+	 TPolinom pol(monoms, 3);
+	 int monoms2[3][2] = { {5, 545}, {1, 536}, {4, 478} };
+	 TPolinom pol2(monoms2, 3);
+	 pol += pol2;
+	 int monoms3[4][2] = {{7, 545}, {4, 536}, {4, 478}, {4, 372}, };
+	 TPolinom res(monoms3, 4);
+	
+	EXPECT_TRUE((res == pol), 1);
 }
 
 TEST(TPolinom, can_multiplicate_pol_and_scal) {
-	TMonom m, n;
-	m.coeff = 5;
-	m.px = 1;
-	m.py = 1;
-	m.pz = 0;
-	n.coeff = 30;
-	n.px = 1;
-	n.py = 1;
-	n.pz = 0;
-	TPolinom p, res;
-	p.insOrd(m);
-	p.insOrd(m);
-	p *= 3;
-	res.insOrd(m);
-	EXPECT_TRUE(res == p);
+	int monoms[3][2] = { {2, 145}, {3, 136}, {4, 372} };
+	TPolinom pol(monoms, 3);
+	pol *= 3;
+	int monoms2[3][2] = { {6, 145}, {9, 136}, {12, 372} };
+	TPolinom pol2(monoms2, 3);
+	EXPECT_TRUE(pol == pol2);
 }
-*/
+TEST(TPolinom, if_InsInOrder_works_or_not) {
+	int monoms[3][2] = { {2, 445}, {3, 436}, {4, 372} };
+	TPolinom pol(monoms, 3);
+	TMonom w;
+	w.coeff = 5;
+	w.px = 1;
+	w.py = 1;
+	w.pz = 1;
+	pol.InsInOrder(w);
+	int monoms2[4][2] = { {2, 445}, {3, 436}, {4, 372}, {5, 111} };
+	TPolinom pol2(monoms2, 4);
+	EXPECT_TRUE(pol == pol2);
+}
 
+TEST(TPolinom, can_multiply_by_polynomial)
+{
+	int monoms[3][2] = { {2, 445}, {3, 436}, {4, 372} };
+	TPolinom pol(monoms, 3);
+	int monoms2[3][2] = { {2, 321}, {3, 122}, {4, 111} };
+	TPolinom pol2(monoms2, 3);
+	TPolinom res;
+	res = pol * pol2;
+	int monoms3[12][2] = { {4, 766}, {6, 757}, {8, 693}, {6, 567}, {9, 558}, {8, 556},{6, 757}, {9, 558}, {12, 547}, {8, 693}, {12, 494}, {16, 483} };
+	TPolinom ressq(monoms3, 12);
+	EXPECT_TRUE(res == ressq);
+}
+
+TEST(TPolinom, can_subtract)
+{
+	TMonom m, q;
+
+	m.coeff = 2;
+	m.px = 4;
+	m.py = 4;
+	m.pz = 5;
+	int monoms[3][2] = { {2, 445}, {3, 436}, {4, 372} };
+	TPolinom pol(monoms, 3);
+	pol -= m;
+	int monoms2[2][2] = { {3, 436}, {4, 372} };
+	TPolinom res(monoms2, 2);
+
+
+	EXPECT_TRUE(res == pol);
+}
 
 TEST(TPolinom, stop)
 {
